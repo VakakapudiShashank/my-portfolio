@@ -27,48 +27,122 @@
     --contact-btn-hover: #9f91ff;
 }
 
-/* --- UPDATED --- */
+/* --- 1. PRE-LOADER & FADE TRANSITION STYLES --- */
+#boot-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--dark-bg-color); /* Dark background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+    opacity: 1;
+    visibility: visible;
+}
+
+.loader-content {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 1.1rem;
+    color: #e0e0e0;
+    width: 90%;
+    max-width: 600px;
+}
+
+#boot-text {
+    white-space: pre-wrap; /* Allows new lines */
+}
+
+#boot-cursor {
+    background-color: #e0e0e0;
+    width: 9px;
+    height: 1.2rem;
+    display: inline-block;
+    vertical-align: middle;
+    animation: blink 1s step-end infinite;
+}
+
+/* Hide the main content by default */
+#main-content {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+/* --- THE "LOADED" STATE --- */
+body.loaded #boot-loader {
+    opacity: 0;
+    visibility: hidden;
+}
+
+body.loaded #main-content {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* --- TERMINAL TYPING EFFECT --- */
+.terminal-body p {
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s ease-in;
+    min-height: 1.8rem; /* Prevent layout jump */
+}
+.terminal-body p:first-child {
+    visibility: visible;
+    opacity: 1;
+}
+.terminal-body p.line-visible {
+    visibility: visible;
+    opacity: 1;
+}
+.terminal-body .cursor {
+    display: none;
+    background-color: #e0e0e0;
+    width: 9px;
+    height: 1.2rem;
+    display: inline-block;
+    vertical-align: middle;
+    animation: blink 1s step-end infinite;
+}
+.terminal-body p:last-child.line-visible .cursor {
+    display: inline-block;
+}
+
+@keyframes blink {
+    from, to { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+
+/* --- 2. Base & Particle Setup --- */
 html {
     background-color: var(--dark-bg-color);
+    scroll-behavior: smooth; /* Adds smooth scrolling for anchor links */
 }
 
 body {
-    /* background-color: var(--dark-bg-color); */ /* <-- REMOVED */
-    background-color: transparent; /* <-- ADDED */
-    color: var(--dark-text-color); /* Default to dark for hero */
+    background-color: transparent; /* Makes body see-through to html */
+    color: var(--dark-text-color); 
     font-family: 'Inter', sans-serif;
     margin: 0;
-    padding-top: 60px; /* Height of the navbar */
-    overflow-x: hidden; /* Prevent horizontal scroll */
+    padding-top: 60px; 
+    overflow-x: hidden; 
 }
 
-
-/*-------------------------------------------------------------------------------------------------------------------*/
-/* ... (Global Setup and body styles) ... */
-
-body {
-    /* background-color: var(--dark-bg-color); */ /* <-- REMOVED */
-    background-color: transparent; /* <-- ADDED */
-    color: var(--dark-text-color); /* Default to dark for hero */
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-    padding-top: 60px; /* Height of the navbar */
-    overflow-x: hidden; /* Prevent horizontal scroll */
-}
-
-/* --- ADDED: Particle Background Styling --- */
 #tsparticles {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -1; /* This is crucial: places it behind all other content */
+    z-index: -1; /* Places it behind all other content */
 }
 
-/*-------------------------------------------------------------------------------------------------------------------*/
 
-/* --- 1. Navigation Bar --- */
+/* --- 3. Navigation Bar --- */
 .navbar {
     background-color: var(--dark-navbar-bg);
     border-bottom: 1px solid #333;
@@ -110,15 +184,32 @@ body {
     text-decoration: none;
     font-size: 0.9rem;
     font-weight: 600;
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, transform 0.2s ease; 
+    display: inline-block; 
 }
 
 .nav-link:hover,
 .nav-link.active {
     color: var(--primary-accent);
+    transform: scale(1.1); /* Maximize effect */
 }
 
-/* --- 2. Hero Section (Remains Dark) --- */
+.hamburger {
+    display: none; /* Hidden on desktop */
+    cursor: pointer;
+}
+
+.hamburger .bar {
+    display: block;
+    width: 25px;
+    height: 3px;
+    margin: 5px auto;
+    background-color: var(--dark-text-color);
+    transition: all 0.3s ease-in-out;
+}
+
+
+/* --- 4. Hero Section --- */
 .hero {
     display: flex;
     max-width: 1200px;
@@ -126,9 +217,10 @@ body {
     padding: 20px;
     align-items: center;
     gap: 40px;
+    position: relative;
+    z-index: 2; /* Sits above particle background */
 }
 
-/* --- 2a. Left Column (Info) --- */
 .hero-info {
     flex: 1;
 }
@@ -186,7 +278,7 @@ body {
 .btn-primary:hover {
     background-color: #444;
     border-color: #555;
-    transform: translateY(-2px);
+    transform: translateY(-2px) scale(1.05); /* Maximize effect */
 }
 
 .btn-secondary {
@@ -200,6 +292,7 @@ body {
     background-color: var(--dark-text-color);
     color: var(--dark-bg-color);
     box-shadow: 2px 8px 4px -6px rgba(0, 0, 0, 0.3);
+    transform: scale(1.05); /* Maximize effect */
 }
 
 .social-links {
@@ -224,10 +317,9 @@ body {
 .social-icon:hover {
     color: var(--primary-accent);
     border-color: var(--primary-accent);
-    transform: translateY(-2px);
+    transform: translateY(-2px) scale(1.1); /* Maximize effect */
 }
 
-/* --- 2b. Right Column (Terminal) --- */
 .hero-terminal {
     flex: 1;
 }
@@ -237,6 +329,12 @@ body {
     border-radius: 8px;
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
     overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+}
+
+.terminal-window:hover {
+    transform: scale(1.03);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
 }
 
 .terminal-header {
@@ -247,19 +345,16 @@ body {
     position: relative;
 }
 
-.dots {
-    display: flex;
-    gap: 6px;
-}
-
-.dot {
+.terminal-header .dot {
     height: 12px;
     width: 12px;
     border-radius: 50%;
+    display: inline-block;
+    margin-right: 4px;
 }
-.red { background-color: #ff5f56; }
-.yellow { background-color: var(--key-color); }
-.green { background-color: #27c93f; }
+.terminal-header .red { background-color: #ff5f56; }
+.terminal-header .yellow { background-color: var(--key-color); }
+.terminal-header .green { background-color: #27c93f; }
 
 .terminal-title {
     color: #333;
@@ -274,53 +369,31 @@ body {
 .terminal-body {
     padding: 20px;
     font-family: 'Source Code Pro', monospace;
-    font-size: 1rem;
+    font-size: 1.1rem; /* Matched placeholder */
     line-height: 1.8;
 }
 
-.prompt {
-    color: var(--prompt-color);
-    margin-right: 8px;
-}
-
-.key {
-    color: var(--key-color);
-    margin-right: 8px;
-}
-
-/* Blinking cursor effect */
-.terminal-body p:last-child {
-    display: flex;
-    align-items: center;
-}
-
-.terminal-body p:last-child span:last-child {
-    width: 8px;
-    height: 1.2em;
-    background: var(--dark-text-color);
-    margin-left: 8px;
-    animation: blink 1s linear infinite;
-}
-
-@keyframes blink {
-    0%, 49% { opacity: 1; }
-    50%, 100% { opacity: 0; }
+.terminal-body .prompt { 
+    color: var(--prompt-color); 
+    margin-right: 8px; 
 }
 
 
-/* --- 3. ABOUT SECTION STYLES (Professional) --- */
+/* --- 5. ABOUT SECTION STYLES --- */
 .about-section {
-    background-color: var(--light-bg-color); /* White background */
-    color: var(--light-text-color); /* Dark text */
+    background-color: var(--light-bg-color); 
+    color: var(--light-text-color); 
     padding: 100px 20px;
     display: flex;
     max-width: 1200px;
-    margin: 0 auto; /* No top/bottom margin */
+    margin: 0 auto; 
     align-items: center;
     gap: 60px;
-    border-bottom: 1px solid var(--light-border-color); /* Separator */
-    border-radius: 15px; /* Added curved edges */
-    overflow: hidden; /* Ensures content respects curves */
+    border-bottom: 1px solid var(--light-border-color); 
+    border-radius: 15px; 
+    overflow: hidden; 
+    position: relative;
+    z-index: 2; /* Sits above particle background */
 }
 
 .about-content {
@@ -335,19 +408,17 @@ body {
     align-items: center;
 }
 
-/* Professional Title */
 .about-section .section-title {
     font-family: 'Inter', sans-serif;
     font-weight: 700;
-    font-size: 2.5rem; /* More professional size */
+    font-size: 2.5rem; 
     color: var(--light-heading-color);
     margin-top: 0;
     margin-bottom: 15px;
     position: relative;
-    display: inline-block; /* For the underline */
+    display: inline-block; 
 }
 
-/* Accent underline */
 .about-section .section-title span {
     display: block;
     width: 60px;
@@ -371,33 +442,28 @@ body {
     margin-bottom: 30px;
 }
 
-/* Image Container */
 .about-image-container {
     width: 100%;
     max-width: 400px;
     height: auto;
     border-radius: 10px;
-    /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); */ /* SHADOW REMOVED */
     overflow: hidden;
-    transition: transform 0.3s ease; /* Removed box-shadow transition */
+    transition: transform 0.3s ease;
     cursor: pointer;
 }
 
-/* Added :active state for touch */
 .about-image-container:hover,
 .about-image-container:active {
-    transform: scale(1.03);
-    /* box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); */ /* SHADOW REMOVED */
+    transform: scale(1.03); 
 }
 
 .about-image img {
     width: 100%;
     height: auto;
     display: block;
-    background-color: var(--light-bg-color); /* Ensure white bg */
+    background-color: var(--light-bg-color); 
 }
 
-/* Highlights */
 .about-highlights {
     display: flex;
     gap: 20px;
@@ -407,7 +473,6 @@ body {
     flex: 1;
     text-align: center;
 }
-/* REMOVED .highlight-item i styling */
 .highlight-item h4 {
     font-size: 1.1rem;
     font-weight: 600;
@@ -415,7 +480,6 @@ body {
     margin: 0;
 }
 
-/* CV Button */
 .btn-cv {
     background-color: var(--primary-accent);
     color: #fff;
@@ -430,54 +494,56 @@ body {
 .btn-cv:hover {
     background-color: transparent;
     color: var(--primary-accent);
-    transform: translateY(-2px);
+    transform: translateY(-2px) scale(1.05); /* Maximize effect */
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 .btn-cv i {
     margin-left: 8px;
 }
 
-/* --- 4. SKILLS SECTION STYLES (FLIP CARD) --- */
+/* --- 6. SKILLS SECTION STYLES --- */
 .skills-section {
-    /* background-color: var(--dark-bg-color); */ /* <-- REMOVED */
-    color: var(--dark-text-color); /* Changed to light text */
+    color: var(--dark-text-color); 
     padding: 100px 20px;
     max-width: 1200px;
-    margin: 0 auto; /* Stacks right below the 'about' section */
+    margin: 0 auto;
+    position: relative;
+    z-index: 2; /* Sits above particle background */
 }
 
-/* Use the same title style as 'about.' */
 .skills-section .section-title {
-    font-family: 'Inter', sans-serif; /* Match 'about.' title */
+    font-family: 'Inter', sans-serif; 
     font-weight: 800;
     font-size: 4rem;
-    color: var(--dark-text-color); /* Changed to light text */
+    color: var(--dark-text-color); 
     margin-top: 0;
     line-height: 1;
-    text-align: center; /* Center the 'skills.' title */
-    margin-bottom: 50px; /* Space before the grid */
+    text-align: center; 
+    margin-bottom: 50px; 
 }
 
-/* New row containers */
 .skills-row-3,
 .skills-row-2 {
     display: flex;
     justify-content: center;
     gap: 30px;
     margin-bottom: 30px;
-    flex-wrap: wrap; /* Allow wrapping on small screens */
+    flex-wrap: wrap; 
 }
 
-/* The flip card container */
 .flip-card {
     background-color: transparent;
     width: 300px;
     height: 250px;
-    perspective: 1000px; /* 3D effect */
+    perspective: 1000px; 
     font-family: 'Inter', sans-serif;
+    transition: transform 0.3s ease;
 }
 
-/* This container is needed to position the front and back */
+.flip-card:hover {
+    transform: scale(1.05);
+}
+
 .flip-card-inner {
     position: relative;
     width: 100%;
@@ -487,32 +553,28 @@ body {
     transform-style: preserve-3d;
 }
 
-/* Do the flip on hover */
 .flip-card:hover .flip-card-inner {
     transform: rotateY(180deg);
 }
 
-/* Position the front and back faces */
 .flip-card-front,
 .flip-card-back {
     position: absolute;
     width: 100%;
     height: 100%;
-    -webkit-backface-visibility: hidden; /* Safari */
+    -webkit-backface-visibility: hidden; 
     backface-visibility: hidden;
     
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    box-sizing: border-box; /* Include padding in width/height */
+    box-sizing: border-box; 
 }
 
-/* Style the front face (title) */
 .flip-card-front {
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
-    /* Transparent background and subtle border */
     background-color: transparent;
     border: 1px solid rgba(255, 255, 255, 0.2); 
 }
@@ -520,37 +582,43 @@ body {
 .flip-card-front h3 {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--primary-accent); /* Use accent color for subheadings */
+    color: var(--primary-accent); 
     margin: 0;
 }
 
-/* Style the back face (list) */
 .flip-card-back {
-    /* White background and dark text */
     background-color: var(--light-bg-color);
     border: 1px solid var(--light-bg-color);
     color: var(--light-text-color);
     transform: rotateY(180deg);
     padding: 25px;
     text-align: left;
+    overflow: hidden;
 }
 
 .flip-card-back ul {
     list-style-type: none;
     padding-left: 0;
     margin: 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease-in-out 0.3s, transform 0.3s ease-in-out 0.3s;
 }
+
+.flip-card:hover .flip-card-back ul {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 
 .flip-card-back li {
     font-size: 1.05rem;
     margin-bottom: 12px;
     line-height: 1.5;
-    /* Flexbox for icon alignment */
     display: flex;
     align-items: center;
 }
 
-/* Style for the skill icons */
 .flip-card-back li i {
     width: 20px;
     margin-right: 12px;
@@ -559,8 +627,7 @@ body {
 }
 
 
-/* --- 5. SCROLL REVEAL ANIMATION --- */
-/* Suitable Effect 2: Fade-in on scroll */
+/* --- 7. SCROLL REVEAL ANIMATION --- */
 .reveal {
     opacity: 0;
     transform: translateY(30px);
@@ -573,21 +640,19 @@ body {
 }
 
 
-/* --- 6. PROJECT SECTION STYLES --- */
-/* This is important for the card layout */
+/* --- 8. PROJECT SECTION STYLES --- */
 *, *::before, *::after {
     box-sizing: border-box;
 }
 
 .project-section {
-    /* background-color: var(--dark-bg-color); */ /* <-- REMOVED */
     padding: 100px 0;
-    min-height: 100vh; /* Set a full height for the section */
+    min-height: 100vh;
     position: relative;
     overflow: hidden;
+    z-index: 2; /* Sits above particle background */
 }
 
-/* Title for Projects */
 .project-section .section-title {
     font-family: 'Inter', sans-serif;
     font-weight: 800;
@@ -596,23 +661,21 @@ body {
     margin-top: 0;
     line-height: 1;
     text-align: center;
-    margin-bottom: 0; /* Changed */
+    margin-bottom: 0; 
 }
 
 .gallery {
     position: relative; 
     width: 100%;
-    height: 80vh; /* Give the gallery a specific height */
+    height: 80vh; 
     overflow: hidden;
 }
 
-/* This is the centered "stage" for the cards */
 .cards {
     position: absolute;
-    /* NEW: Larger card size */
     width: 20rem; 
     height: 26rem; 
-    top: 50%; /* Center vertically */
+    top: 50%; 
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 0;
@@ -623,24 +686,28 @@ body {
     list-style: none;
     padding: 0;
     margin: 0;
-    /* NEW: Larger card size */
     width: 20rem;
     height: 26rem;
     position: absolute;
     top: 0;
     left: 0;
     
-    /* This is the animation! */
     transition: transform 0.5s ease-out, 
                 opacity 0.4s ease-out, 
                 z-index 0.5s step-end;
 }
 
-/* --- STYLES FOR CARD CONTENT --- */
+.cards li.active-card {
+    cursor: pointer;
+}
+.cards li.active-card:hover {
+    transform: translateX(0) scale(1.05) !important; /* Use !important to override JS */
+    z-index: 11;
+}
 
 .project-content {
-    width: 105%;
-    height: 105%;
+    width: 100%;
+    height: 100%;
     background: #2a2a2a;
     border-radius: 0.8rem;
     overflow: hidden;
@@ -652,7 +719,7 @@ body {
 
 .card-image {
     width: 100%;
-    height: 11rem; /* NEW: Increased image height */
+    height: 11rem; 
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -661,7 +728,7 @@ body {
 }
 
 .card-info {
-    padding: 1rem; /* NEW: Increased padding */
+    padding: 1rem; 
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -669,13 +736,13 @@ body {
 }
 
 .card-info h3 {
-    font-size: 1.3rem; /* NEW: Increased font size */
+    font-size: 1.3rem; 
     margin: 0 0 0.4rem 0;
     color: #fff;
 }
 
 .card-info p {
-    font-size: 0.85rem; /* NEW: Increased font size */
+    font-size: 0.85rem; 
     margin: 0 0 0.75rem 0;
     line-height: 1.5;
     flex-grow: 1;
@@ -695,7 +762,7 @@ body {
     background: #444;
     padding: 0.2rem 0.5rem;
     border-radius: 0.25rem;
-    font-size: 0.75rem; /* NEW: Increased font size */
+    font-size: 0.75rem; 
     font-weight: bold;
 }
 
@@ -709,17 +776,18 @@ body {
     background-color: var(--primary-accent);
     color: #fff;
     text-decoration: none;
-    padding: 0.5rem 0.8rem; /* NEW: Increased padding */
+    padding: 0.5rem 0.8rem; 
     border-radius: 0.25rem;
-    font-size: 0.8rem; /* NEW: Increased font size */
+    font-size: 0.8rem; 
     font-weight: bold;
     text-align: center;
     flex-grow: 1;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, transform 0.2s ease;
 }
 
 .project-links a:hover {
     background-color: #ff826e;
+    transform: scale(1.05); /* Maximize effect */
 }
 
 .project-links a i {
@@ -727,21 +795,18 @@ body {
     margin-left: 5px;
 }
 
-/* --- ACTION BUTTONS --- */
-
 .actions {
     position: absolute;
-    bottom: 5%; /* NEW: Adjusted position */
+    bottom: 5%; 
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 1rem;
-    z-index: 100; /* Ensures buttons are clickable */
+    z-index: 100; 
 }
 
-/* Made selector specific to avoid conflicts */
 .actions button {
     font-size: 1rem;
     padding: 0.5rem 1rem;
@@ -751,17 +816,17 @@ body {
     color: #fff;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, transform 0.2s ease;
 }
 
 .actions button:hover {
     background-color: #ff826e;
+    transform: scale(1.05); /* Maximize effect */
 }
 
 
-/* --- 7. CORRECTED CONTACT SECTION STYLES --- */
+/* --- 9. CONTACT SECTION STYLES --- */
 .contact-section {
-    /* background-color: var(--dark-bg-color); */ /* <-- REMOVED */
     padding: 100px 20px;
     display: flex;
     justify-content: center;
@@ -769,8 +834,10 @@ body {
     gap: 60px;
     min-height: 80vh;
     color: #e0e0e0;
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
-    border-top: 1px solid #333; /* Dark theme border */
+    flex-wrap: wrap;
+    border-top: 1px solid #333; 
+    position: relative;
+    z-index: 2; /* Sits above particle background */
 }
 
 .contact-left {
@@ -781,7 +848,7 @@ body {
 
 .contact-subheading {
     font-size: 0.9rem;
-    color: var(--primary-accent); /* CHANGED: Use main accent */
+    color: var(--primary-accent); 
     font-weight: 600;
     display: flex;
     align-items: center;
@@ -792,7 +859,7 @@ body {
 .contact-subheading .dot {
     width: 8px;
     height: 8px;
-    background-color: var(--primary-accent); /* CHANGED: Use main accent */
+    background-color: var(--primary-accent); 
     border-radius: 50%;
 }
 
@@ -815,11 +882,17 @@ body {
 .contact-right {
     flex: 1;
     max-width: 500px;
-    background-color: var(--dark-navbar-bg); /* CHANGED: Match navbar bg */
+    background-color: var(--dark-navbar-bg); 
     padding: 40px;
     border-radius: 15px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-    border: 1px solid #333; /* Dark theme border */
+    border: 1px solid #333; 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-right:hover {
+    transform: scale(1.03);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
 }
 
 .contact-form .form-group {
@@ -830,7 +903,7 @@ body {
 .contact-form .input-label {
     position: absolute;
     top: 15px;
-    left: 45px; /* Adjusted for icon */
+    left: 45px; 
     color: var(--dark-text-color);
     opacity: 0.7;
     font-size: 1rem;
@@ -841,9 +914,9 @@ body {
 .contact-form input,
 .contact-form textarea {
     width: 100%;
-    padding: 15px 15px 15px 45px; /* Padding for icon */
-    background-color: var(--dark-bg-color); /* CHANGED */
-    border: 1px solid #444; /* CHANGED */
+    padding: 15px 15px 15px 45px; 
+    background-color: var(--dark-bg-color); 
+    border: 1px solid #444; 
     border-radius: 8px;
     color: #e0e0e0;
     font-size: 1rem;
@@ -856,7 +929,6 @@ body {
     min-height: 100px;
 }
 
-/* Float label effect */
 .contact-form input:focus + .input-label,
 .contact-form textarea:focus + .input-label,
 .contact-form input:not(:placeholder-shown) + .input-label,
@@ -865,7 +937,7 @@ body {
     left: 10px;
     font-size: 0.75rem;
     color: var(--primary-accent);
-    background-color: var(--dark-navbar-bg); /* Match form background */
+    background-color: var(--dark-navbar-bg); 
     padding: 0 5px;
     border-radius: 3px;
     opacity: 1;
@@ -873,11 +945,10 @@ body {
 
 .contact-form input:focus,
 .contact-form textarea:focus {
-    border-color: var(--primary-accent); /* Primary accent on focus */
-    box-shadow: 0 0 0 2px rgba(255, 99, 71, 0.3); /* Accent glow */
+    border-color: var(--primary-accent); 
+    box-shadow: 0 0 0 2px rgba(255, 99, 71, 0.3); 
 }
 
-/* Form Icons */
 .form-icon {
     position: absolute;
     left: 15px;
@@ -904,7 +975,7 @@ body {
 .send-message-btn {
     width: 100%;
     padding: 15px;
-    background-color: var(--primary-accent); /* CHANGED */
+    background-color: var(--primary-accent); 
     border: none;
     border-radius: 8px;
     color: #fff;
@@ -919,12 +990,11 @@ body {
 }
 
 .send-message-btn:hover {
-    background-color: #ff826e; /* CHANGED */
-    transform: translateY(-2px);
+    background-color: #ff826e; 
+    transform: translateY(-2px) scale(1.05); /* Maximize effect */
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-/* NEW: Contact Social Links */
 .contact-social-links {
     display: flex;
     gap: 20px;
@@ -950,16 +1020,14 @@ body {
     background-color: var(--primary-accent);
     border-color: var(--primary-accent);
     color: #fff;
-    transform: translateY(-3px);
+    transform: translateY(-3px) scale(1.1); /* Maximize effect */
     box-shadow: 0 4px 10px rgba(255, 99, 71, 0.3);
 }
 
 
-/* --- 8. FOOTER SECTION STYLES (NEW) --- */
+/* --- 10. FOOTER SECTION STYLES --- */
 .site-footer {
-    /* Using the navbar bg for a slightly different dark color */
     background-color: var(--dark-navbar-bg); 
-    /* Adding the subtle grid pattern from the image */
     background-image: 
         linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
@@ -968,6 +1036,9 @@ body {
     color: #aaa;
     padding: 60px 20px;
     border-top: 1px solid #333;
+    
+    position: relative;
+    z-index: 2; /* Sits above particle background */
 }
 
 .footer-container {
@@ -984,8 +1055,7 @@ body {
 }
 
 .footer-logo-col {
-    /* Logo is already styled by .nav-logo */
-    margin-right: 30px; /* Give it space */
+    margin-right: 30px;
 }
 
 .footer-col {
@@ -1013,15 +1083,17 @@ body {
 .footer-col a {
     color: #aaa;
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, transform 0.2s ease; 
+    display: inline-block; 
 }
 
 .footer-col a:hover {
     color: var(--primary-accent);
+    transform: scale(1.05); /* Maximize effect */
 }
 
 .footer-copyright {
-    flex-basis: 300px; /* Give it a set width */
+    flex-basis: 300px; 
     text-align: right;
     font-size: 0.9rem;
 }
@@ -1057,16 +1129,16 @@ body {
 }
 
 
-/* --- 9. Responsive Adjustments --- */
+/* --- 11. Responsive Adjustments --- */
 @media (max-width: 900px) {
-    .hero, .about-section, .contact-section { /* Added contact-section */
+    .hero, .about-section, .contact-section { 
         flex-direction: column;
         text-align: center;
         margin: 40px auto;
         padding: 20px;
         gap: 40px;
     }
-    .hero-info, .about-content, .contact-left { /* Added contact-left */
+    .hero-info, .about-content, .contact-left { 
         padding-right: 0;
         max-width: 100%;
         text-align: center;
@@ -1074,15 +1146,14 @@ body {
     .contact-right {
         max-width: 100%;
     }
-    /* Center new About Me title */
     .about-section .section-title {
         display: inline-block;
     }
     .about-section .section-title span {
-        margin: 8px auto 0; /* Center the underline */
+        margin: 8px auto 0; 
     }
     .btn-cv {
-        margin: 0 auto; /* Center the button */
+        margin: 0 auto; 
     }
     .hero-terminal, .about-image {
         margin-top: 40px;
@@ -1095,7 +1166,7 @@ body {
         max-width: 100%;
         margin: 0 auto;
     }
-    .button-group, .social-links, .contact-social-links { /* Added contact-social-links */
+    .button-group, .social-links, .contact-social-links { 
         justify-content: center;
     }
     .contact-heading {
@@ -1104,12 +1175,55 @@ body {
 }
 
 @media (max-width: 768px) {
+    .hamburger {
+        display: block; /* Show hamburger */
+    }
+
+    .hamburger.active .bar:nth-child(2) {
+        opacity: 0; /* Hide middle bar */
+    }
+    .hamburger.active .bar:nth-child(1) {
+        transform: translateY(8px) rotate(45deg); /* Top bar -> / */
+    }
+    .hamburger.active .bar:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg); /* Bottom bar -> \ */
+    }
+
+    .nav-menu {
+        position: fixed; 
+        left: -100%; 
+        top: 60px; 
+        flex-direction: column;
+        background-color: var(--dark-navbar-bg);
+        width: 100%;
+        height: 100vh; 
+        text-align: center;
+        transition: 0.3s;
+        gap: 0;
+        box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-menu li {
+        width: 100%;
+    }
+
+    .nav-link {
+        padding: 1.5rem 0;
+        width: 100%;
+    }
+    .nav-link:hover {
+        background-color: #333;
+        transform: scale(1); /* Disable scale on mobile links */
+    }
+
+    .nav-menu.active {
+        left: 0; /* Slide in */
+    }
+
     .navbar {
         padding: 0 15px;
     }
-    .nav-menu {
-        gap: 15px;
-    }
+
     .name-title {
         font-size: 3rem;
     }
@@ -1119,21 +1233,19 @@ body {
     .skills-section .section-title,
     .about-section .section-title,
     .project-section .section-title,
-    .contact-heading { /* Added contact-heading */
+    .contact-heading { 
         font-size: 3rem;
     }
     .about-intro {
         font-size: 1.3rem;
     }
-    /* Stack highlights on mobile */
     .about-highlights {
         flex-direction: column;
         gap: 25px;
     }
     
-    /* Project slider adjustments */
     .cards {
-        width: 16rem; /* Adjusted size */
+        width: 16rem; 
         height: 22rem;
     }
     .cards li {
@@ -1144,14 +1256,13 @@ body {
     .card-info p { font-size: 0.8rem; }
     .tech-list li { font-size: 0.7rem; }
 
-    /* Footer responsive */
     .footer-content {
         flex-direction: column;
         text-align: center;
     }
     .footer-copyright {
         text-align: center;
-        order: -1; /* Move copyright to the top on mobile */
+        order: -1; 
         flex-basis: 100%;
     }
     .footer-legal-links {
@@ -1182,7 +1293,7 @@ body {
     .skills-section .section-title,
     .about-section .section-title,
     .project-section .section-title,
-    .contact-heading { /* Added contact-heading */
+    .contact-heading { 
         font-size: 2.5rem;
     }
     .about-intro {
@@ -1192,7 +1303,6 @@ body {
         font-size: 0.95rem;
     }
     
-    /* Project slider on small screens */
     .gallery {
         height: 65vh;
     }
@@ -1201,7 +1311,7 @@ body {
         bottom: 2%;
     }
     .cards {
-        width: 14rem; /* Back to original size for small screens */
+        width: 14rem; 
         height: 18rem;
     }
     .cards li {
@@ -1217,7 +1327,6 @@ body {
     .tech-list li { font-size: 0.65rem; }
     .project-links a { font-size: 0.7rem; }
 
-    /* Contact Form on small screens */
     .contact-right {
         padding: 30px 20px;
     }
